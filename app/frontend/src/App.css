@@ -226,8 +226,38 @@ body {
   color: #f57c00;
 }
 
+.tier-badge.enterprise {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
 .tier-description {
   color: #666;
   font-size: 0.95rem;
   padding-left: 1rem;
+}
+
+.tier-note {
+  color: #999;
+  font-size: 0.85rem;
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+.tier-bonuses {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e0e0e0;
+}
+
+.tier-bonuses h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.tier-bonuses p {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
 }

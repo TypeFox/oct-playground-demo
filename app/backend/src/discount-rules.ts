@@ -6,12 +6,12 @@
  * discount rates.
  */
 
-export type CustomerType = 'REGULAR' | 'VIP' | 'LOYALTY';
+export type CustomerType = 'REGULAR' | 'VIP' | 'LOYALTY' | 'ENTERPRISE';
 
 /**
  * Calculate the discounted amount based on customer type and purchase amount.
  * 
- * @param customerType - The type of customer (REGULAR, VIP, or LOYALTY)
+ * @param customerType - The type of customer (REGULAR, VIP, LOYALTY, or ENTERPRISE)
  * @param amount - The original purchase amount before discount
  * @returns The final amount after applying the appropriate discount
  */
@@ -26,6 +26,11 @@ export function calculateDiscount(customerType: string, amount: number): number 
         return amount * 0.95; // 5% discount
     }
     
+    // ENTERPRISE customers receive a 15% discount on all purchases
+    if (customerType === 'ENTERPRISE') {
+        return amount * 0.85; // 15% discount
+    }
+    
     // Regular customers pay full price
     return amount;
 }
@@ -38,6 +43,8 @@ export function calculateDiscount(customerType: string, amount: number): number 
  */
 export function getDiscountRate(customerType: CustomerType): number {
     switch (customerType) {
+        case 'ENTERPRISE':
+            return 0.15;
         case 'VIP':
             return 0.10;
         case 'LOYALTY':
@@ -55,7 +62,7 @@ export function getDiscountRate(customerType: CustomerType): number {
  * @returns True if the customer type is valid, false otherwise
  */
 export function isValidCustomerType(customerType: string): customerType is CustomerType {
-    return ['REGULAR', 'VIP', 'LOYALTY'].includes(customerType);
+    return ['REGULAR', 'VIP', 'LOYALTY', 'ENTERPRISE'].includes(customerType);
 }
 
 /**

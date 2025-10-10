@@ -70,9 +70,10 @@ app/
 │   ├── tsconfig.json
 │   └── vite.config.ts
 │
-├── discount-rules.ts           # Shared business logic (Act 1) ⭐
-├── config.json                 # Discount configuration (Act 3) ⭐
-├── README.md                   # This file (Act 2) ⭐
+├── discount-rules.ts           # Complex business logic with tiered discounts (Act 1) ⭐
+├── validation-rules.ts         # Business validation and edge cases (Act 4) ⭐
+├── config.json                 # Complex nested configuration (Act 3) ⭐
+├── README.md                   # This file with detailed examples (Act 2) ⭐
 ├── package.json                # Root workspace configuration
 └── package-lock.json           # Single lock file for all dependencies
 
@@ -83,34 +84,120 @@ app/
 
 ### Customer Discount Tiers
 
-The system supports three customer types with different discount levels:
+The system supports four customer types with sophisticated discount rules combining base discounts, tiered bonuses, and seasonal multipliers:
 
-- **Regular Customers**: Standard pricing with no discount applied
-- **VIP Customers**: Premium members receive a 10% discount on all purchases
-- **Loyalty Card Holders**: Customers with loyalty cards receive a 5% discount on all purchases
+| Type | Base Discount | Tier Bonuses | Seasonal Multiplier | Max Total Discount | Minimum Order |
+|------|---------------|--------------|---------------------|-------------------|---------------|
+| REGULAR | 0% | Yes | Yes | 40% | None |
+| LOYALTY | 5% | Yes | Yes | 50% | None |
+| VIP | 10% | Yes | Yes | 60% | None |
+| ENTERPRISE | 15% | Yes | Yes | No cap | $5,000 |
 
-| Type | Discount | Multiplier |
-|------|----------|------------|
-| REGULAR | 0% | 1.0 |
-| LOYALTY | 5% | 0.95 |
-| VIP | 10% | 0.9 |
+#### Tier Bonuses (All Customer Types)
+
+Tier bonuses are automatically applied based on order amount:
+
+- **Orders $500-$999**: Additional 5% discount
+- **Orders $1000+**: Additional 10% discount
+
+#### Seasonal Multipliers
+
+During promotional periods, base discounts are multiplied:
+
+- **Black Friday** (Nov 29): 2x multiplier
+- **Cyber Monday** (Dec 2): 2x multiplier  
+- **Holiday Season** (Dec 15-31): 1.5x multiplier
+
+**Note**: Orders under $100 do not qualify for seasonal multipliers during promotional periods.
 
 ### Discount Calculation
 
-The discount system automatically calculates the final price based on:
-- Customer type (Regular, VIP, or Loyalty)
-- Original purchase amount
-- Configured discount percentages
+The discount system uses a sophisticated formula that combines multiple factors:
+
+#### Calculation Formula
+
+```
+totalDiscount = (baseDiscount × seasonalMultiplier) + tierBonus
+finalDiscount = min(totalDiscount, maxDiscountForCustomerType)
+finalAmount = originalAmount × (1 - finalDiscount)
+```
+
+**Key Points:**
+- Seasonal multiplier applies ONLY to base discount, not tier bonuses
+- Tier bonuses are added after seasonal multiplication
+- Final discount is capped at the maximum for each customer type
+- ENTERPRISE customers have no cap
+
+#### Calculation Examples
+
+**Example 1: VIP customer spending $1000 during Black Friday**
+- Base discount: 10%
+- Seasonal multiplier: 2x (Black Friday)
+- Seasonal discount: 10% × 2 = 20%
+- Tier bonus: 10% (for $1000+ order)
+- Total discount: 20% + 10% = 30%
+- Final discount: 30% (under 60% VIP cap) ✓
+- **Final amount: $700** (saved $300)
+
+**Example 2: LOYALTY customer spending $1000 during Black Friday**
+- Base discount: 5%
+- Seasonal multiplier: 2x (Black Friday)
+- Seasonal discount: 5% × 2 = 10%
+- Tier bonus: 10% (for $1000+ order)
+- Total discount: 10% + 10% = 20%
+- Final discount: 20% (under 50% LOYALTY cap) ✓
+- **Final amount: $800** (saved $200)
+
+**Example 3: REGULAR customer spending $1000 during Black Friday**
+- Base discount: 0%
+- Seasonal multiplier: 2x (Black Friday)
+- Seasonal discount: 0% × 2 = 0%
+- Tier bonus: 10% (for $1000+ order)
+- Total discount: 0% + 10% = 10%
+- Final discount: 10% (under 40% REGULAR cap) ✓
+- **Final amount: $900** (saved $100)
+
+**Example 4: ENTERPRISE customer spending $10,000 during Holiday Season**
+- Base discount: 15%
+- Seasonal multiplier: 1.5x (Holiday Season)
+- Seasonal discount: 15% × 1.5 = 22.5%
+- Tier bonus: 10% (for $1000+ order)
+- Total discount: 22.5% + 10% = 32.5%
+- Final discount: 32.5% (no cap for ENTERPRISE) ✓
+- **Final amount: $6,750** (saved $3,250)
+
+**Example 5: VIP customer spending $600 (no promotional period)**
+- Base discount: 10%
+- Seasonal multiplier: 1x (no promotion)
+- Seasonal discount: 10% × 1 = 10%
+- Tier bonus: 5% (for $500-$999 order)
+- Total discount: 10% + 5% = 15%
+- Final discount: 15% (under 60% VIP cap) ✓
+- **Final amount: $510** (saved $90)
 
 All calculations are performed server-side to ensure consistency and security.
 
 ### Configuration Management
 
-Discount rules are configurable through the `config.json` file, allowing business administrators to:
-- Adjust discount percentages for different customer tiers
-- Set minimum order amounts
-- Configure maximum discount limits per order
-- Specify currency settings
+Discount rules are highly configurable through the `config.json` file, allowing business administrators to:
+- Define base discounts and caps for each customer type
+- Configure tier bonus thresholds and amounts
+- Set up promotional periods with seasonal multipliers
+- Enable/disable specific promotions without deleting configuration
+- Adjust business rules for discount stacking and validation
+- Set minimum order amounts for customer types
+- Configure fraud prevention thresholds
+
+### Validation Rules
+
+The system includes comprehensive validation to ensure business policy compliance:
+
+1. **Order Amount Validation**: Orders must have positive amounts
+2. **Customer Type Validation**: Only valid customer types are accepted
+3. **ENTERPRISE Minimum**: Orders below $5,000 are automatically downgraded to VIP pricing
+4. **Promotional Minimums**: Orders under $100 don't qualify for seasonal multipliers
+5. **Large Order Review**: Orders over $50,000 are flagged for manual review
+6. **Discount Stacking**: Rules for combining promotional codes with tier discounts
 
 ## Technical Architecture
 
@@ -173,120 +260,155 @@ The core discount calculation logic is implemented in `discount-rules.ts`, which
 
 This application is designed to demonstrate Eclipse Open Collaboration Tools through a realistic stakeholder-developer collaboration scenario.
 
-### Act 1: Reviewing the Business Logic
+### Act 1: Discovering Complex Business Requirements
 
 **File:** `discount-rules.ts`
 
 During the demo:
-1. Jan (developer) opens `discount-rules.ts` in Theia IDE
-2. Stakeholder sees it instantly in OCT Playground (browser)
-3. Both can edit the logic collaboratively in real-time
-4. Cursor positions and changes are synchronized
+1. Dev opens `discount-rules.ts` with simple discount logic
+2. Sta sees it instantly and discusses complex requirements over the call
+3. Both discuss tiered discounts, seasonal multipliers, and stacking rules
+4. Dev refactors the code while Sta validates business logic in real-time
+5. They collaboratively design the discount calculation formula
+6. Sta catches edge cases (ENTERPRISE customers, discount caps)
 
-**Initial state:**
-```typescript
-export function calculateDiscount(customerType: string, amount: number): number {
-    if (customerType === 'VIP') {
-        return amount * 0.9; // 10% discount
-    }
-    return amount;
-}
-```
-
-**After collaboration (adding LOYALTY support):**
-```typescript
-export function calculateDiscount(customerType: string, amount: number): number {
-    if (customerType === 'VIP') {
-        return amount * 0.9; // 10% discount
-    }
-    if (customerType === 'LOYALTY') {
-        return amount * 0.95; // 5% discount
-    }
-    return amount;
-}
-```
+**Key complexity points:**
+- Formula design: Should discounts add or multiply? Where do caps apply?
+- Seasonal multipliers: Apply to base only or include tier bonuses?
+- Customer type hierarchy: What happens when ENTERPRISE orders are too small?
+- Performance considerations: Multiple calculations per order
 
 **Value demonstrated:**
-- Business stakeholder can directly edit code logic
-- No IDE installation required for stakeholder
-- Real-time cursor tracking shows who edits what
-- Both parties see changes instantly
+- Complex business logic requires immediate clarification
+- Both parties contribute domain knowledge (business + technical)
+- Comments become conversation medium within code
+- Synchronous editing prevents misunderstandings about calculation logic
+- Questions answered immediately, preventing costly rework
 
-### Act 2: Synchronizing Across Multiple Files
+### Act 2: Synchronizing Documentation with Complex Rules
 
 **File:** `README.md` (this file)
 
 During the demo:
-1. Jan switches from `discount-rules.ts` to `README.md`
-2. Stakeholder's view automatically follows
-3. Both edit documentation together
-4. Demonstrates synchronized file navigation
+1. Dev switches to `README.md` - Sta's view follows automatically
+2. Both create comprehensive discount matrix table with 4 customer types
+3. Sta adds calculation formula with multiple examples
+4. Dev validates technical accuracy of formulas
+5. They add examples that demonstrate both normal cases and cap scenarios
+6. Discussion about whether regular customers should get tier bonuses
 
-**Key section to edit:**
-```markdown
-### Customer Discount Tiers
-- **Loyalty Card Holders**: Customers with loyalty cards receive a 5% discount on all purchases
-```
+**Key complexity points:**
+- Discount matrix with multiple dimensions (base, tier, seasonal, caps)
+- Calculation formula needs to be clear for non-technical readers
+- Examples must cover edge cases (hitting caps, no base discount, etc.)
+- Customer-facing language must be accurate and clear
 
 **Value demonstrated:**
-- Cross-file navigation is synchronized
-- Both technical and non-technical content can be edited
-- Documentation stays aligned with code changes
-- Stakeholder can ensure business messaging is correct
+- Complex business rules require detailed documentation
+- Both parties validate documentation matches implementation
+- Real-time discussion catches potential misunderstandings
+- Examples refined collaboratively to cover edge cases
+- Stakeholder ensures customer-facing language is clear
+- Developer ensures technical accuracy
 
-### Act 3: Configuration Alignment
+### Act 3: Complex Configuration Structure
 
 **File:** `config.json`
 
 During the demo:
-1. Jan switches to `config.json`
-2. Stakeholder suggests adding `"loyaltyDiscount": 0.05` entry
-3. Stakeholder types it directly in OCT Playground
-4. Jan validates JSON syntax and explains system integration
+1. Dev switches to `config.json` - Sta's view follows
+2. Both realize simple config won't support complex requirements
+3. Dev restructures into nested configuration with customer types, tier bonuses, promotional periods
+4. Sta proposes ENTERPRISE customer type with no cap
+5. They add promotional period definitions (Black Friday, Cyber Monday, Holiday Season)
+6. Discussion about enable/disable flags vs deleting config entries
+7. Business rules section makes policies explicit
 
-**Configuration structure:**
-```json
-{
-  "discountRules": {
-    "vipDiscount": 0.10,
-    "loyaltyDiscount": 0.05
-  },
-  "currency": "USD",
-  "minimumOrderAmount": 0,
-  "maxDiscountPerOrder": 1000
-}
-```
+**Key complexity points:**
+- Nested structure with multiple configuration sections
+- Null values for "no cap" on ENTERPRISE customers
+- Array of tier bonuses with thresholds
+- Promotional periods with date ranges and multipliers
+- Enable/disable flags for operational flexibility
+- Business rules that affect calculation behavior
 
 **Value demonstrated:**
-- Collaboration extends beyond code to configuration
-- Stakeholder can propose business rule changes
-- Developer validates technical correctness
-- Configuration is human-readable and editable
+- Complex nested configuration requires careful structuring
+- Stakeholder proposes requirements, developer implements valid JSON
+- Real-time validation prevents syntax errors
+- Configuration matches code implementation
+- Edge cases discussed and resolved (null for no cap, enabled flags)
+- Business rules made explicit and configurable
 
-### Act 4: Wrap-Up
+### Act 4: Validation Rules and Edge Cases
+
+**File:** `validation-rules.ts` (new file created during session)
+
+During the demo:
+1. Dev proposes adding validation file for business rule enforcement
+2. Dev creates new file - Sta's view switches to it automatically
+3. Sta discusses validation rules over the call
+4. Dev implements validation logic
+5. Discussion about error vs warning for ENTERPRISE minimum order
+6. They decide to downgrade to VIP pricing instead of blocking sale
+7. Add fraud prevention for large orders over $50,000
+8. Document interaction with promotional code system
+
+**Key complexity points:**
+- Distinction between blocking errors and informational warnings
+- Business decision: downgrade vs reject for ENTERPRISE minimum
+- Fraud prevention thresholds
+- Promotional period minimum order amounts
+- Documentation of cross-system interactions (promo codes)
+
+**Value demonstrated:**
+- New file creation synchronized across participants
+- Complex validation rules require discussion of edge cases
+- Real-time discussion resolves ambiguities (error vs warning)
+- Both parties ensure all marketing requirements covered
+- Inline documentation clarifies complex interactions
+
+### Act 5: Wrap-Up
 
 **Complete collaboration workflow:**
-1. ✅ Code logic shaped together (`discount-rules.ts`)
-2. ✅ Documentation refined together (`README.md`)
-3. ✅ Configuration validated together (`config.json`)
-4. ✅ No IDE setup required for stakeholder
-5. ✅ Real collaboration in code and text simultaneously
+1. ✅ Complex tiered discount logic designed together (`discount-rules.ts`)
+2. ✅ Comprehensive documentation with examples (`README.md`)
+3. ✅ Sophisticated nested configuration (`config.json`)
+4. ✅ Business validation rules and edge cases (`validation-rules.ts`)
+5. ✅ No IDE setup required for stakeholder
+6. ✅ Real collaboration across 4 files with synchronized navigation
+7. ✅ Complex requirements finalized in one session vs days of back-and-forth
 
 ## Configuration
 
-Edit `config.json` to customize discount rules:
+Edit `config.json` to customize discount rules. The configuration supports:
 
-```json
-{
-  "discountRules": {
-    "vipDiscount": 0.10,      // 10% discount for VIP customers
-    "loyaltyDiscount": 0.05   // 5% discount for loyalty card holders
-  },
-  "currency": "USD",
-  "minimumOrderAmount": 0,
-  "maxDiscountPerOrder": 1000
-}
-```
+### Customer Types
+Define base discounts, maximum caps, and minimum order amounts for each customer type:
+- REGULAR: 0% base, 40% cap
+- LOYALTY: 5% base, 50% cap
+- VIP: 10% base, 60% cap
+- ENTERPRISE: 15% base, no cap, $5000 minimum
+
+### Tier Bonuses
+Configure order amount thresholds and bonus percentages:
+- $500-$999: 5% bonus
+- $1000+: 10% bonus
+
+### Promotional Periods
+Set up seasonal promotions with date ranges and multipliers:
+- Black Friday: 2x multiplier
+- Cyber Monday: 2x multiplier
+- Holiday Season: 1.5x multiplier
+
+Each promotion can be enabled/disabled without deleting the configuration.
+
+### Business Rules
+Control system behavior:
+- `allowDiscountStacking`: Enable/disable combining multiple discounts
+- `applySeasonalToBaseOnly`: Seasonal multiplier applies only to base discount
+- `largeOrderThreshold`: Amount that triggers manual review
+- `requireMinimumForTierBonus`: Whether tier bonuses require minimum order
 
 ## Development Commands
 
@@ -367,24 +489,33 @@ cd frontend && npm run build
 - [ ] Backend starts without errors
 - [ ] Frontend starts without errors
 - [ ] Can access UI at http://localhost:3000
-- [ ] Can calculate discount for VIP customer
-- [ ] Can calculate discount for LOYALTY customer
 - [ ] Can calculate discount for REGULAR customer
-- [ ] All three key files exist and are editable
+- [ ] Can calculate discount for LOYALTY customer
+- [ ] Can calculate discount for VIP customer
+- [ ] Can calculate discount for ENTERPRISE customer
+- [ ] Tier bonuses apply correctly ($500 and $1000 thresholds)
+- [ ] Seasonal multipliers work during promotional periods
+- [ ] Discount caps are enforced per customer type
+- [ ] ENTERPRISE customers below $5000 get VIP pricing
+- [ ] All four key files exist and are editable
 - [ ] Documentation matches implementation
+- [ ] Validation rules catch edge cases
 
 ## Future Enhancements
 
 Potential improvements to the system include:
-- Time-based promotional discounts
 - Product-category-specific discounts
-- Cumulative discount rules
+- Cumulative discount rules based on customer lifetime value
 - Integration with inventory management
-- Analytics and reporting dashboard
-- Multi-currency support
+- Analytics and reporting dashboard for discount effectiveness
+- Multi-currency support with exchange rates
 - User authentication and authorization
-- Admin panel for discount management
+- Admin panel for real-time discount management
 - A/B testing for discount strategies
+- Machine learning for personalized discount recommendations
+- Integration with promotional code system
+- Customer upgrade recommendations (e.g., LOYALTY → VIP)
+- Real-time fraud detection for large orders
 
 ## Additional Documentation
 

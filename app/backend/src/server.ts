@@ -50,7 +50,7 @@ app.post('/api/calculate-discount', (req, res) => {
 
 app.get('/api/customer-types', (req, res) => {
   res.json({
-    types: ['REGULAR', 'VIP', 'LOYALTY']
+    types: ['REGULAR', 'LOYALTY', 'VIP', 'ENTERPRISE']
   });
 });
 
