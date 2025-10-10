@@ -29,20 +29,20 @@ Important: If the scenario is just about communication, a regular meeting withou
 
 ### Roles
 
- - You: Project stakeholder (no IDE, just browser). You care about business rules and documentation clarity.
- - Jan: Senior engineer (working in Theia IDE with OCT integration). He owns the technical implementation.
+ - **Sta** (Stakeholder): Project stakeholder (no IDE, just browser). Cares about business rules and documentation clarity.
+ - **Dev** (Developer): Senior engineer (working in Theia IDE with OCT integration). Owns the technical implementation.
 
 ### Scene Setup
 
-You call Jan on a video call to discuss urgent changes to the discount system. Marketing wants to launch a tiered discount promotion next week, but the current system only supports simple percentage discounts. The requirements are complex: tiered bonuses based on order amount, seasonal multipliers, discount stacking rules, and maximum caps per customer type. You need to ensure the new rules are both technically feasible and aligned with business strategy—and you need to finalize this today.
+Sta calls Dev on a video call to discuss urgent changes to the discount system. Marketing wants to launch a tiered discount promotion next week, but the current system only supports simple percentage discounts. The requirements are complex: tiered bonuses based on order amount, seasonal multipliers, discount stacking rules, and maximum caps per customer type. They need to ensure the new rules are both technically feasible and aligned with business strategy—and they need to finalize this today.
 
-Jan starts an OCT session from Theia and sends you a room ID. You join via the OCT Playground in your browser. You're both on the video call and can see each other's cursors in the shared editor.
+Dev starts an OCT session from Theia and sends Sta a room ID. Sta joins via the OCT Playground in the browser. They're both on the video call and can see each other's cursors in the shared editor.
 
-**Presentation Note:** During the demo, you and Jan will speak naturally to each other over the video call while simultaneously editing the shared files. The audience will see both your screen (OCT Playground in browser) and hear your conversation. This demonstrates how voice communication + shared editing creates a powerful collaboration experience that's impossible with either tool alone.
+**Presentation Note:** During the demo, Sta and Dev will speak naturally to each other over the video call while simultaneously editing the shared files. The audience will see Sta's screen (OCT Playground in browser) and hear the conversation. This demonstrates how voice communication + shared editing creates a powerful collaboration experience that's impossible with either tool alone.
 
 ## Act 1 – Discovering Complex Business Requirements
 
- - Jan opens discount-rules.ts in Theia. You see it instantly in the Playground.
+ - Dev opens discount-rules.ts in Theia. Sta sees it instantly in the Playground.
  - The file contains basic logic:
 
 ```typescript
@@ -57,28 +57,28 @@ export function calculateDiscount(customerType: string, amount: number): number 
 }
 ```
 
- - **You (on call):** "Okay, so this is what we have now. But marketing needs something more complex. They want tiered discounts—like if you spend $500, you get an extra 5%, and if you spend $1000, you get an extra 10%."
+ - **Sta:** "Okay, so this is what we have now. But marketing needs something more complex. They want tiered discounts—like if you spend $500, you get an extra 5%, and if you spend $1000, you get an extra 10%."
  
- - **Jan:** "Interesting. So that would stack with the VIP discount? A VIP spending $1000 would get 10% plus 10%?"
+ - **Dev:** "Interesting. So that would stack with the VIP discount? A VIP spending $1000 would get 10% plus 10%?"
  
- - **You:** "Exactly! And they also want seasonal multipliers for Black Friday—like 2x all discounts."
+ - **Sta:** "Exactly! And they also want seasonal multipliers for Black Friday—like 2x all discounts."
  
- - **Jan:** "Hmm, that could get complicated. Let me think about the formula..." *(starts typing a comment in the code)*
+ - **Dev:** "Hmm, that could get complicated. Let me think about the formula..." *(starts typing a comment in the code)*
    ```typescript
    // TODO: Need to figure out: (base * seasonal) + tier? Or (base + tier) * seasonal?
    ```
 
- - **You:** "What's the difference?"
+ - **Sta:** "What's the difference?"
  
- - **Jan:** "Well, if we multiply the base by seasonal first, then add tier bonuses, a VIP on Black Friday would get (10% × 2) + 10% = 30%. But if we add first then multiply, it would be (10% + 10%) × 2 = 40%."
+ - **Dev:** "Well, if we multiply the base by seasonal first, then add tier bonuses, a VIP on Black Friday would get (10% × 2) + 10% = 30%. But if we add first then multiply, it would be (10% + 10%) × 2 = 40%."
  
- - **You:** "Oh! Yeah, let's do the first one—multiply base by seasonal, then add tier. That seems more reasonable. But we need caps, right? We can't give away 50% discounts."
+ - **Sta:** "Oh! Yeah, let's do the first one—multiply base by seasonal, then add tier. That seems more reasonable. But we need caps, right? We can't give away 50% discounts."
  
- - **Jan:** "Good point. What should the caps be?"
+ - **Dev:** "Good point. What should the caps be?"
  
- - **You:** "Let's say... 40% for regular customers, 50% for loyalty, 60% for VIP."
+ - **Sta:** "Let's say... 40% for regular customers, 50% for loyalty, 60% for VIP."
  
- - **Jan:** "Got it. Let me refactor this..." *(starts coding while you watch)*
+ - **Dev:** "Got it. Let me refactor this..." *(starts coding while Sta watches)*
 
 ```typescript
 interface DiscountContext {
@@ -110,13 +110,13 @@ export function calculateTieredDiscount(context: DiscountContext): DiscountResul
 }
 ```
 
- - **You:** "Wait, what about our enterprise customers? They should get better treatment—maybe 15% base and no cap?"
+ - **Sta:** "Wait, what about our enterprise customers? They should get better treatment—maybe 15% base and no cap?"
  
- - **Jan:** "No cap at all? That could be risky..."
+ - **Dev:** "No cap at all? That could be risky..."
  
- - **You:** "Well, enterprise orders are huge—minimum $5,000. We can afford to be generous."
+ - **Sta:** "Well, enterprise orders are huge—minimum $5,000. We can afford to be generous."
  
- - **Jan:** "Fair enough. Let me add that customer type..." *(adds ENTERPRISE to the enum and updates the logic)*
+ - **Dev:** "Fair enough. Let me add that customer type..." *(adds ENTERPRISE to the enum and updates the logic)*
 
 Value shown: 
 - Complex business logic requires real-time discussion and immediate clarification
@@ -128,11 +128,11 @@ Value shown:
 
 ## Act 2 – Synchronizing Documentation with Complex Rules
 
- - **Jan:** "Okay, let me switch to the README so we can document this..." *(switches to README.md in Theia)*
- - Your Playground view instantly follows to the same file.
+ - **Dev:** "Okay, let me switch to the README so we can document this..." *(switches to README.md in Theia)*
+ - Sta's Playground view instantly follows to the same file.
  
- - **Jan:** "I'll start with a table showing all the customer types..."
- - You watch as Jan types the table structure, then you jump in and start editing:
+ - **Dev:** "I'll start with a table showing all the customer types..."
+ - Sta watches as Dev types the table structure, then Sta jumps in and starts editing:
 
 ```markdown
 ### Customer Discount Tiers
@@ -147,16 +147,16 @@ The system supports four customer types with sophisticated discount rules:
 | ENTERPRISE | 15% | Yes | Yes | No cap |
 ```
 
- - **You:** "Let me add the tier bonus info..." *(types tier bonus section)*
+ - **Sta:** "Let me add the tier bonus info..." *(types tier bonus section)*
    ```markdown
    #### Tier Bonuses (All Customer Types)
    - Orders $500-$999: Additional 5% discount
    - Orders $1000+: Additional 10% discount
    ```
 
- - **Jan:** "Wait, we should clarify the formula. Do tier bonuses apply before or after the seasonal multiplier?"
+ - **Dev:** "Wait, we should clarify the formula. Do tier bonuses apply before or after the seasonal multiplier?"
  
- - **You:** "After! Remember, we said (base times seasonal) plus tier. Let me add that..." *(starts typing the formula)*
+ - **Sta:** "After! Remember, we said (base times seasonal) plus tier. Let me add that..." *(starts typing the formula)*
 
 ```markdown
 #### Discount Calculation Formula
@@ -165,7 +165,7 @@ totalDiscount = (baseDiscount × seasonalMultiplier) + tierBonus
 finalDiscount = min(totalDiscount, maxDiscountForCustomerType)
 ```
 
- - **Jan:** "Good. We should add examples. Let me do a VIP on Black Friday..." *(types example)*
+ - **Dev:** "Good. We should add examples. Let me do a VIP on Black Friday..." *(types example)*
 
 ```markdown
 **Example:** VIP customer spending $1000 during Black Friday (2x seasonal):
@@ -176,11 +176,11 @@ finalDiscount = min(totalDiscount, maxDiscountForCustomerType)
 - Final: 30% (under 60% VIP cap) ✓
 ```
 
- - **You:** "Perfect! But we should show an example where someone hits the cap, so it's really clear."
+ - **Sta:** "Perfect! But we should show an example where someone hits the cap, so it's really clear."
  
- - **Jan:** "Good idea. And maybe one for regular customers too, since they have no base discount."
+ - **Dev:** "Good idea. And maybe one for regular customers too, since they have no base discount."
  
- - **You:** "Yeah, let me add those..." *(types two more examples)*
+ - **Sta:** "Yeah, let me add those..." *(types two more examples)*
 
 ```markdown
 **Example 2:** LOYALTY customer spending $1000 during Black Friday:
@@ -198,11 +198,11 @@ finalDiscount = min(totalDiscount, maxDiscountForCustomerType)
 - Final: 10% (under 40% REGULAR cap) ✓
 ```
 
- - **Jan:** "Hmm, so regular customers only get tier bonuses, no base discount. Is that really what marketing wants?"
+ - **Dev:** "Hmm, so regular customers only get tier bonuses, no base discount. Is that really what marketing wants?"
  
- - **You:** "Yeah, it's intentional. It gives them an incentive to upgrade to loyalty. They can still save money on big orders, but loyalty members get more."
+ - **Sta:** "Yeah, it's intentional. It gives them an incentive to upgrade to loyalty. They can still save money on big orders, but loyalty members get more."
  
- - **Jan:** "Makes sense. That's actually pretty smart."
+ - **Dev:** "Makes sense. That's actually pretty smart."
 
 Value shown: 
 - Cross-file navigation is synchronized automatically
@@ -215,8 +215,8 @@ Value shown:
 
 ## Act 3 – Complex Configuration Structure
 
- - **Jan:** "Now we need to update the config file to match all this..." *(switches to config.json)*
- - Your view follows instantly. You see the current simple config:
+ - **Dev:** "Now we need to update the config file to match all this..." *(switches to config.json)*
+ - Sta's view follows instantly. They see the current simple config:
 
 ```json
 {
@@ -230,9 +230,9 @@ Value shown:
 }
 ```
 
- - **You:** "Yeah, this won't work anymore. We need to restructure it."
+ - **Sta:** "Yeah, this won't work anymore. We need to restructure it."
  
- - **Jan:** "Right. Let me create a proper structure for customer types..." *(starts typing)*
+ - **Dev:** "Right. Let me create a proper structure for customer types..." *(starts typing)*
 
 ```json
 {
@@ -259,9 +259,9 @@ Value shown:
 }
 ```
 
- - **You:** "Don't forget ENTERPRISE—15% base and no cap. How do we represent 'no cap'?"
+ - **Sta:** "Don't forget ENTERPRISE—15% base and no cap. How do we represent 'no cap'?"
  
- - **Jan:** "We can use null for that..." *(adds ENTERPRISE)*
+ - **Dev:** "We can use null for that..." *(adds ENTERPRISE)*
 
 ```json
     "ENTERPRISE": {
@@ -272,9 +272,9 @@ Value shown:
     }
 ```
 
- - **You:** "Perfect. Now we need the tier thresholds—$500 and $1000."
+ - **Sta:** "Perfect. Now we need the tier thresholds—$500 and $1000."
  
- - **Jan:** "I'll add those as an array..." *(types tier bonuses section)*
+ - **Dev:** "I'll add those as an array..." *(types tier bonuses section)*
 
 ```json
   "tierBonuses": [
@@ -291,9 +291,9 @@ Value shown:
   ]
 ```
 
- - **You:** "Great! And we need the promotional periods—Black Friday, Cyber Monday, Holiday Season."
+ - **Sta:** "Great! And we need the promotional periods—Black Friday, Cyber Monday, Holiday Season."
  
- - **Jan:** "Okay, let me add those with dates..." *(adds promotional periods)*
+ - **Dev:** "Okay, let me add those with dates..." *(adds promotional periods)*
 
 ```json
   "promotionalPeriods": [
@@ -321,13 +321,13 @@ Value shown:
   ]
 ```
 
- - **You:** "Nice! I like that you added an 'enabled' flag. So we can turn off a promotion without deleting it?"
+ - **Sta:** "Nice! I like that you added an 'enabled' flag. So we can turn off a promotion without deleting it?"
  
- - **Jan:** "Exactly. Makes it easier to manage."
+ - **Dev:** "Exactly. Makes it easier to manage."
  
- - **You:** "Smart. Should we add anything else?"
+ - **Sta:** "Smart. Should we add anything else?"
  
- - **Jan:** "Maybe a business rules section to make our policies explicit..." *(adds final section)*
+ - **Dev:** "Maybe a business rules section to make our policies explicit..." *(adds final section)*
 
 ```json
   "currency": "USD",
@@ -340,11 +340,11 @@ Value shown:
 }
 ```
 
- - **You:** "What's 'applySeasonalToBaseOnly'?"
+ - **Sta:** "What's 'applySeasonalToBaseOnly'?"
  
- - **Jan:** "That's the rule we decided earlier—seasonal multiplier only applies to the base discount, not the tier bonuses."
+ - **Dev:** "That's the rule we decided earlier—seasonal multiplier only applies to the base discount, not the tier bonuses."
  
- - **You:** "Oh right! Yeah, that's important to document. This looks good!"
+ - **Sta:** "Oh right! Yeah, that's important to document. This looks good!"
 
 Value shown:
 - Complex nested configuration requires careful structuring
@@ -357,8 +357,8 @@ Value shown:
 
 ## Act 4 – Validation Rules and Edge Cases
 
- - **Jan:** "We should probably add some validation to catch edge cases. Let me create a new file..." *(creates validation-rules.ts)*
- - Your view switches to the new file automatically.
+ - **Dev:** "We should probably add some validation to catch edge cases. Let me create a new file..." *(creates validation-rules.ts)*
+ - Sta's view switches to the new file automatically.
 
 ```typescript
 /**
@@ -390,13 +390,13 @@ export function validateDiscountRequest(
 }
 ```
 
- - **You:** "Good idea. What kind of validation do we need?"
+ - **Sta:** "Good idea. What kind of validation do we need?"
  
- - **Jan:** "Well, basic stuff like positive amounts, valid customer types..."
+ - **Dev:** "Well, basic stuff like positive amounts, valid customer types..."
  
- - **You:** "And ENTERPRISE customers need a minimum order of $5,000, right?"
+ - **Sta:** "And ENTERPRISE customers need a minimum order of $5,000, right?"
  
- - **Jan:** "Right. Let me add those..." *(starts implementing validation rules)*
+ - **Dev:** "Right. Let me add those..." *(starts implementing validation rules)*
 
 ```typescript
     // Rule 1: Amount must be positive
@@ -416,13 +416,13 @@ export function validateDiscountRequest(
     }
 ```
 
- - **You:** "Wait, should that be an error? What if an enterprise customer wants to make a small order? We'd just reject it?"
+ - **Sta:** "Wait, should that be an error? What if an enterprise customer wants to make a small order? We'd just reject it?"
  
- - **Jan:** "Good point. What should we do?"
+ - **Dev:** "Good point. What should we do?"
  
- - **You:** "Let's make it a warning and just give them VIP pricing instead. We don't want to lose the sale."
+ - **Sta:** "Let's make it a warning and just give them VIP pricing instead. We don't want to lose the sale."
  
- - **Jan:** "Smart. So downgrade them automatically..." *(updates the code)*
+ - **Dev:** "Smart. So downgrade them automatically..." *(updates the code)*
 
 ```typescript
     // Rule 3: ENTERPRISE minimum (warning, will apply VIP pricing)
@@ -431,11 +431,11 @@ export function validateDiscountRequest(
     }
 ```
 
- - **Jan:** "What about promotional periods? Should there be a minimum?"
+ - **Dev:** "What about promotional periods? Should there be a minimum?"
  
- - **You:** "Yeah, let's say orders under $100 don't get the seasonal multiplier. Otherwise people will game the system with tiny orders."
+ - **Sta:** "Yeah, let's say orders under $100 don't get the seasonal multiplier. Otherwise people will game the system with tiny orders."
  
- - **Jan:** "Makes sense..." *(adds that rule)*
+ - **Dev:** "Makes sense..." *(adds that rule)*
 
 ```typescript
     // Rule 4: Promotional period minimum for seasonal multiplier
@@ -445,13 +445,13 @@ export function validateDiscountRequest(
     }
 ```
 
- - **You:** "Should we add fraud prevention? Like flag really large orders?"
+ - **Sta:** "Should we add fraud prevention? Like flag really large orders?"
  
- - **Jan:** "Good idea. What's the threshold?"
+ - **Dev:** "Good idea. What's the threshold?"
  
- - **You:** "Maybe $50,000? Anything above that gets flagged for manual review."
+ - **Sta:** "Maybe $50,000? Anything above that gets flagged for manual review."
  
- - **Jan:** "Got it..." *(adds large order check)*
+ - **Dev:** "Got it..." *(adds large order check)*
 
 ```typescript
     // Rule 6: Large order review
@@ -460,9 +460,9 @@ export function validateDiscountRequest(
     }
 ```
 
- - **You:** "What about promotional codes? Can people stack those with these discounts?"
+ - **Sta:** "What about promotional codes? Can people stack those with these discounts?"
  
- - **Jan:** "That's a separate system, but I should add a note about it..." *(adds documentation comment)*
+ - **Dev:** "That's a separate system, but I should add a note about it..." *(adds documentation comment)*
 
 ```typescript
 /**
@@ -474,9 +474,9 @@ export function validateDiscountRequest(
  */
 ```
 
- - **You:** "Perfect. I think that covers everything marketing mentioned."
+ - **Sta:** "Perfect. I think that covers everything marketing mentioned."
  
- - **Jan:** "Agreed. This should catch all the edge cases."
+ - **Dev:** "Agreed. This should catch all the edge cases."
 
 Value shown:
 - New file creation is synchronized across participants
@@ -489,8 +489,8 @@ Value shown:
 
 ## Act 5 – Wrap-Up and Verification
 
- - **Jan:** "Okay, let me quickly review what we've built..." *(navigates back through the files)*
- - Your view follows as Jan switches between files.
+ - **Dev:** "Okay, let me quickly review what we've built..." *(navigates back through the files)*
+ - Sta's view follows as Dev switches between files.
 
 **discount-rules.ts:**
 - ✅ Complex tiered discount calculation with seasonal multipliers
@@ -517,17 +517,17 @@ Value shown:
 - ✅ Fraud prevention for large orders
 - ✅ Documentation of interaction with promo code system
 
- - **You:** "This is perfect! This is exactly what marketing needs, and we got it done in one session."
+ - **Sta:** "This is perfect! This is exactly what marketing needs, and we got it done in one session."
  
- - **Jan:** "Yeah, if we'd done this over email or tickets, it would have taken days. All those little decisions—like whether to error or warn on the ENTERPRISE minimum—we resolved them instantly."
+ - **Dev:** "Yeah, if we'd done this over email or tickets, it would have taken days. All those little decisions—like whether to error or warn on the ENTERPRISE minimum—we resolved them instantly."
  
- - **You:** "Exactly! And I could validate the business logic as you were coding it. Like when we figured out the formula—multiply base by seasonal, then add tier. If you'd implemented it the other way, we would have caught it in testing and had to redo everything."
+ - **Sta:** "Exactly! And I could validate the business logic as you were coding it. Like when we figured out the formula—multiply base by seasonal, then add tier. If you'd implemented it the other way, we would have caught it in testing and had to redo everything."
  
- - **Jan:** "Right. And the documentation examples—you made sure they were clear for customers while I made sure the math was correct. That back-and-forth would have been painful over email."
+ - **Dev:** "Right. And the documentation examples—you made sure they were clear for customers while I made sure the math was correct. That back-and-forth would have been painful over email."
  
- - **You:** "Definitely. Okay, I'll let marketing know we're ready to go. Thanks for jumping on this so quickly!"
+ - **Sta:** "Definitely. Okay, I'll let marketing know we're ready to go. Thanks for jumping on this so quickly!"
  
- - **Jan:** "No problem. This was actually pretty efficient!"
+ - **Dev:** "No problem. This was actually pretty efficient!"
 
 **Summary of what synchronous collaboration enabled:**
 
@@ -568,17 +568,17 @@ Value shown:
 
 **Key Moments to Emphasize:**
 1. **Act 1**: The formula discussion (add vs multiply) - shows how complex logic needs real-time clarification
-2. **Act 2**: When Jan switches files and your view follows automatically - demonstrates synchronized navigation
+2. **Act 2**: When Dev switches files and Sta's view follows automatically - demonstrates synchronized navigation
 3. **Act 4**: The ENTERPRISE minimum decision (error vs warning) - shows collaborative decision-making
 4. **Act 5**: The comparison of 1 hour vs 3-5 days - drives home the efficiency gain
 
 **Audience Engagement:**
-- After Act 1, you might pause and ask: "How long would this formula discussion take over email?"
-- After Act 4, highlight: "Notice how we made a business decision in 30 seconds that would normally require a meeting"
-- During Act 5, emphasize: "We edited 4 different files together, and both of us always knew exactly what was happening"
+- After Act 1, pause and ask: "How long would this formula discussion take over email?"
+- After Act 4, highlight: "Notice how they made a business decision in 30 seconds that would normally require a meeting"
+- During Act 5, emphasize: "They edited 4 different files together, and both participants always knew exactly what was happening"
 
 **Technical Notes:**
 - Make sure both screens are visible to the audience (or switch between them)
-- Show cursor highlights when both of you are editing
+- Show cursor highlights when both participants are editing
 - If there's a lag, acknowledge it naturally - real collaboration isn't always perfect
 - Have the OCT room ID ready before the presentation starts

@@ -265,12 +265,12 @@ This application is designed to demonstrate Eclipse Open Collaboration Tools thr
 **File:** `discount-rules.ts`
 
 During the demo:
-1. Jan opens `discount-rules.ts` with simple discount logic
-2. Stakeholder sees it instantly and starts typing comments about complex requirements
+1. Dev opens `discount-rules.ts` with simple discount logic
+2. Sta sees it instantly and discusses complex requirements over the call
 3. Both discuss tiered discounts, seasonal multipliers, and stacking rules
-4. Jan refactors the code while stakeholder validates business logic in real-time
+4. Dev refactors the code while Sta validates business logic in real-time
 5. They collaboratively design the discount calculation formula
-6. Stakeholder catches edge cases (ENTERPRISE customers, discount caps)
+6. Sta catches edge cases (ENTERPRISE customers, discount caps)
 
 **Key complexity points:**
 - Formula design: Should discounts add or multiply? Where do caps apply?
@@ -290,10 +290,10 @@ During the demo:
 **File:** `README.md` (this file)
 
 During the demo:
-1. Jan switches to `README.md` - stakeholder's view follows automatically
+1. Dev switches to `README.md` - Sta's view follows automatically
 2. Both create comprehensive discount matrix table with 4 customer types
-3. Stakeholder adds calculation formula with multiple examples
-4. Jan validates technical accuracy of formulas
+3. Sta adds calculation formula with multiple examples
+4. Dev validates technical accuracy of formulas
 5. They add examples that demonstrate both normal cases and cap scenarios
 6. Discussion about whether regular customers should get tier bonuses
 
@@ -316,10 +316,10 @@ During the demo:
 **File:** `config.json`
 
 During the demo:
-1. Jan switches to `config.json` - stakeholder's view follows
+1. Dev switches to `config.json` - Sta's view follows
 2. Both realize simple config won't support complex requirements
-3. Jan restructures into nested configuration with customer types, tier bonuses, promotional periods
-4. Stakeholder proposes ENTERPRISE customer type with no cap
+3. Dev restructures into nested configuration with customer types, tier bonuses, promotional periods
+4. Sta proposes ENTERPRISE customer type with no cap
 5. They add promotional period definitions (Black Friday, Cyber Monday, Holiday Season)
 6. Discussion about enable/disable flags vs deleting config entries
 7. Business rules section makes policies explicit
@@ -345,10 +345,10 @@ During the demo:
 **File:** `validation-rules.ts` (new file created during session)
 
 During the demo:
-1. Jan proposes adding validation file for business rule enforcement
-2. Jan creates new file - stakeholder's view switches to it automatically
-3. Stakeholder lists validation rules as comments
-4. Jan implements validation logic
+1. Dev proposes adding validation file for business rule enforcement
+2. Dev creates new file - Sta's view switches to it automatically
+3. Sta discusses validation rules over the call
+4. Dev implements validation logic
 5. Discussion about error vs warning for ENTERPRISE minimum order
 6. They decide to downgrade to VIP pricing instead of blocking sale
 7. Add fraud prevention for large orders over $50,000
