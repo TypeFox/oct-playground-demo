@@ -82,6 +82,8 @@ app/
 
 ## Features
 
+### 🎯 Core Discount System
+
 ### Customer Discount Tiers
 
 The system supports four customer types with sophisticated discount rules combining base discounts, tiered bonuses, and seasonal multipliers:
@@ -177,6 +179,105 @@ finalAmount = originalAmount × (1 - finalDiscount)
 
 All calculations are performed server-side to ensure consistency and security.
 
+### 🎫 Promotional Code System
+
+The application includes a comprehensive promotional code system that works alongside tier discounts:
+
+**Available Promo Codes:**
+- **WELCOME10**: 10% off orders over $50
+- **SAVE20**: $20 off orders over $100
+- **VIP25**: 25% off for VIP/Enterprise customers (disables tier bonuses)
+- **BULK50**: $50 off orders over $500
+- **FREESHIP**: $15 off orders over $75 (free shipping equivalent)
+
+**Promo Code Features:**
+- Percentage or fixed amount discounts
+- Minimum order requirements
+- Customer type restrictions
+- Usage limits
+- Expiration dates
+- Configurable stacking with tier bonuses and seasonal multipliers
+
+### 📦 Product Catalog
+
+Browse a comprehensive product catalog with category-based discounts:
+
+**Product Categories:**
+- **Electronics**: 5% category discount (Tech sale)
+- **Clothing**: 10% category discount (Fashion week)
+- **Books**: 15% category discount (Reading promotion)
+- **Sports**: 8% category discount (Fitness month)
+- **Home**: Standard pricing
+- **Toys**: Standard pricing
+
+**Catalog Features:**
+- 10+ sample products across all categories
+- Real-time stock tracking
+- Category-based automatic discounts
+- Product search functionality
+- Price calculation with category discounts
+
+### 🛒 Shopping Cart
+
+Full-featured shopping cart with bulk discount calculations:
+
+**Cart Features:**
+- Add multiple products with quantities
+- Automatic category discount application
+- Real-time cart summary with all discounts
+- Update quantities or remove items
+- Persistent cart per customer
+- Bulk discount calculations
+
+**Cart Summary Includes:**
+- Item count and subtotal
+- Category discounts breakdown
+- Tier bonus discounts
+- Promo code discounts
+- Final total with all savings
+
+### 📊 Order History
+
+Track all customer orders with detailed information:
+
+**Order Tracking:**
+- Complete order history per customer
+- Order date and time stamps
+- Discount breakdown per order
+- Savings calculation
+- Promo code usage tracking
+- Customer type at time of purchase
+
+### 📈 Analytics Dashboard
+
+Real-time analytics showing discount system performance:
+
+**Analytics Metrics:**
+- Total orders processed
+- Total revenue generated
+- Total customer savings
+- Average order value
+- Average discount percentage
+- Orders breakdown by customer type
+
+**Business Insights:**
+- Track discount effectiveness
+- Monitor customer type distribution
+- Analyze savings patterns
+- Optimize discount strategies
+
+### 👥 Customer Management
+
+Comprehensive customer profile management:
+
+**Customer Features:**
+- Create and manage customer profiles
+- Track customer type (REGULAR, LOYALTY, VIP, ENTERPRISE)
+- Lifetime statistics (total orders, total spent, lifetime savings)
+- Customer search functionality
+- Email-based customer lookup
+- Customer notes and metadata
+
 ### Configuration Management
 
 Discount rules are highly configurable through the `config.json` file, allowing business administrators to:
@@ -203,31 +304,104 @@ The system includes comprehensive validation to ensure business policy complianc
 
 ### Backend API
 
-Built with Node.js and Express, providing RESTful endpoints:
+Built with Node.js and Express, providing comprehensive RESTful endpoints:
 
-- **POST /api/calculate-discount** - Calculate discount for a purchase
+#### Discount Calculation
+- **POST /api/calculate-discount** - Calculate discount with optional promo code
   ```json
-  Request: {"customerType": "VIP", "amount": 100}
-  Response: {"originalAmount": 100, "discountedAmount": 90, "discountPercentage": 10, "customerType": "VIP"}
+  Request: {
+    "customerType": "VIP", 
+    "amount": 100, 
+    "customerId": "CUST-001",
+    "saveToHistory": true,
+    "promoCode": "WELCOME10"
+  }
+  Response: {
+    "originalAmount": 100, 
+    "discountedAmount": 81, 
+    "discountPercentage": 19, 
+    "customerType": "VIP",
+    "promoCodeDiscount": {...},
+    "warnings": []
+  }
   ```
 
-- **GET /api/customer-types** - Get supported customer types
+#### Customer Management
+- **POST /api/customers** - Create new customer
+- **GET /api/customers** - List all customers (supports ?type= and ?search= filters)
+- **GET /api/customers/:id** - Get customer details
+- **PUT /api/customers/:id** - Update customer
+- **DELETE /api/customers/:id** - Delete customer
+
+#### Order History
+- **GET /api/orders** - Get all orders (supports ?customerId= and ?limit= filters)
+- **GET /api/orders/:id** - Get specific order
+- **DELETE /api/orders/:id** - Delete order
+
+#### Analytics
+- **GET /api/stats** - Get comprehensive order statistics
   ```json
-  Response: {"types": ["REGULAR", "VIP", "LOYALTY"]}
+  Response: {
+    "totalOrders": 42,
+    "totalRevenue": 5234.50,
+    "totalSavings": 892.30,
+    "averageOrderValue": 124.63,
+    "averageDiscount": 14.2,
+    "ordersByCustomerType": {...}
+  }
   ```
 
+#### Promotional Codes
+- **GET /api/promo-codes** - Get all active promo codes
+- **POST /api/promo-codes/validate** - Validate a promo code
+
+#### Product Catalog
+- **GET /api/products** - List all products (supports ?category= and ?search= filters)
+- **GET /api/products/:id** - Get product details
+- **GET /api/category-discounts** - Get all category discounts
+- **POST /api/products/:id/calculate-price** - Calculate product price with discounts
+
+#### Shopping Cart
+- **POST /api/cart** - Create or get cart for customer
+- **GET /api/cart/:id** - Get cart details
+- **POST /api/cart/:id/items** - Add item to cart
+- **PUT /api/cart/:id/items/:productId** - Update item quantity
+- **DELETE /api/cart/:id/items/:productId** - Remove item from cart
+- **GET /api/cart/:id/summary** - Get cart summary with all discounts
+- **DELETE /api/cart/:id** - Clear cart
+
+#### System
 - **GET /health** - Health check endpoint
-  ```json
-  Response: {"status": "ok", "service": "discount-api"}
-  ```
+- **GET /api/customer-types** - Get supported customer types
 
 ### Frontend Application
 
-React-based single-page application that provides:
+React-based single-page application with multiple views:
+
+**Calculator View:**
 - Intuitive discount calculator interface
 - Real-time discount calculation
+- Promo code input and validation
 - Visual representation of discount tiers
 - Responsive design for all devices
+
+**Order History View:**
+- Complete order history display
+- Order details with discount breakdown
+- Promo code usage tracking
+- Chronological order listing
+
+**Promo Codes View:**
+- Browse all available promo codes
+- View promo code details and requirements
+- Copy codes for easy use
+- See discount values and minimums
+
+**Analytics View:**
+- Real-time statistics dashboard
+- Visual metrics cards
+- Customer type breakdown
+- Revenue and savings tracking
 
 ### Business Logic
 
@@ -486,6 +660,7 @@ cd frontend && npm run build
 
 ## Verification Checklist
 
+### Core Discount System
 - [ ] Backend starts without errors
 - [ ] Frontend starts without errors
 - [ ] Can access UI at http://localhost:3000
@@ -497,9 +672,109 @@ cd frontend && npm run build
 - [ ] Seasonal multipliers work during promotional periods
 - [ ] Discount caps are enforced per customer type
 - [ ] ENTERPRISE customers below $5000 get VIP pricing
+
+### New Features
+- [ ] Promo codes can be applied to orders
+- [ ] Promo code validation works correctly
+- [ ] Order history displays past orders
+- [ ] Analytics dashboard shows statistics
+- [ ] Product catalog displays all products
+- [ ] Category discounts apply automatically
+- [ ] Shopping cart can add/remove items
+- [ ] Cart summary calculates all discounts
+- [ ] Customer management CRUD operations work
+
+### Demo Files (OCT Integration)
 - [ ] All four key files exist and are editable
+- [ ] discount-rules.ts contains complex business logic
+- [ ] validation-rules.ts has edge case handling
+- [ ] config.json has nested configuration
+- [ ] README.md has comprehensive documentation
 - [ ] Documentation matches implementation
-- [ ] Validation rules catch edge cases
+
+## API Usage Examples
+
+### Calculate Discount with Promo Code
+```bash
+curl -X POST http://localhost:3001/api/calculate-discount \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customerType": "VIP",
+    "amount": 150,
+    "customerId": "DEMO-USER-001",
+    "saveToHistory": true,
+    "promoCode": "WELCOME10"
+  }'
+```
+
+### Get Order History
+```bash
+curl http://localhost:3001/api/orders?customerId=DEMO-USER-001
+```
+
+### Get Analytics
+```bash
+curl http://localhost:3001/api/stats
+```
+
+### Browse Products
+```bash
+curl http://localhost:3001/api/products?category=ELECTRONICS
+```
+
+### Create Shopping Cart
+```bash
+curl -X POST http://localhost:3001/api/cart \
+  -H "Content-Type: application/json" \
+  -d '{"customerId": "DEMO-USER-001", "customerType": "VIP"}'
+```
+
+## Architecture Overview
+
+The application follows a modern full-stack architecture:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Frontend (React)                      │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────────┐ │
+│  │Calculator│  │  Order   │  │  Promo   │  │Analytics│ │
+│  │   View   │  │ History  │  │  Codes   │  │Dashboard│ │
+│  └──────────┘  └──────────┘  └──────────┘  └─────────┘ │
+└─────────────────────────────────────────────────────────┘
+                          │
+                    REST API (JSON)
+                          │
+┌─────────────────────────────────────────────────────────┐
+│                  Backend (Express.js)                    │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │   Discount   │  │   Customer   │  │    Order     │  │
+│  │    Rules     │  │  Management  │  │   History    │  │
+│  └──────────────┘  └──────────────┘  └──────────────┘  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │  Promo Code  │  │   Product    │  │   Shopping   │  │
+│  │    Rules     │  │   Catalog    │  │     Cart     │  │
+│  └──────────────┘  └──────────────┘  └──────────────┘  │
+└─────────────────────────────────────────────────────────┘
+                          │
+                  In-Memory Storage
+                (Production: Database)
+```
+
+## Future Enhancements
+
+Potential improvements to the system include:
+- Database integration (PostgreSQL/MongoDB)
+- User authentication and authorization
+- Payment gateway integration
+- Email notifications for orders
+- Advanced analytics with charts and graphs
+- Export functionality for reports
+- Multi-currency support
+- Internationalization (i18n)
+- Mobile app version
+- Admin dashboard for managing discounts
+- A/B testing for discount strategies
+- Machine learning for personalized discounts
 
 ## Future Enhancements
 
