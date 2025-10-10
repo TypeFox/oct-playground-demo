@@ -1,0 +1,57 @@
+// Dev Container configuration for full-stack TypeScript development
+// Optimized for Node.js, React, Express.js, and TypeScript
+//
+// See https://aka.ms/devcontainer.json for more information.
+{
+	"name": "Full-Stack TypeScript (Node.js 20)",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:20",
+	
+	// Configure tool-specific properties
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"ms-vscode.vscode-typescript-next",
+				"bradlc.vscode-tailwindcss"
+			],
+			"settings": {
+				"editor.defaultFormatter": "esbenp.prettier-vscode",
+				"editor.formatOnSave": true,
+				"editor.codeActionsOnSave": {
+					"source.fixAll.eslint": "explicit"
+				},
+				"typescript.tsdk": "node_modules/typescript/lib",
+				"typescript.enablePromptUseWorkspaceTsdk": true
+			}
+		}
+	},
+
+	// Forward ports for backend and frontend
+	"forwardPorts": [3000, 3001],
+	"portsAttributes": {
+		"3000": {
+			"label": "Frontend (React)",
+			"onAutoForward": "notify"
+		},
+		"3001": {
+			"label": "Backend (Express)",
+			"onAutoForward": "notify"
+		}
+	},
+
+	// Install dependencies on container creation
+	"postCreateCommand": "cd app && npm install",
+
+	// Set environment variables
+	"remoteEnv": {
+		"NODE_ENV": "development"
+	},
+
+	// Use 'features' to add additional tools
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {
+			"version": "latest"
+		}
+	}
+}

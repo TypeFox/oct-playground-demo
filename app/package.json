@@ -1,0 +1,22 @@
+{
+  "name": "ecommerce-discount-app",
+  "version": "1.0.0",
+  "description": "Full-stack e-commerce discount calculation application",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "build:all": "npm run build --workspace=backend && npm run build --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "start:backend": "npm start --workspace=backend",
+    "start:frontend": "npm run preview --workspace=frontend",
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "build": "npm run build:all"
+  },
+  "keywords": ["ecommerce", "discount", "fullstack", "typescript", "react", "express"],
+  "author": "",
+  "license": "MIT"
+}
