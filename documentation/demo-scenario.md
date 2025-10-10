@@ -34,9 +34,11 @@ Important: If the scenario is just about communication, a regular meeting withou
 
 ### Scene Setup
 
-You call Jan to discuss urgent changes to the discount system. Marketing wants to launch a tiered discount promotion next week, but the current system only supports simple percentage discounts. The requirements are complex: tiered bonuses based on order amount, seasonal multipliers, discount stacking rules, and maximum caps per customer type. You need to ensure the new rules are both technically feasible and aligned with business strategy—and you need to finalize this today.
+You call Jan on a video call to discuss urgent changes to the discount system. Marketing wants to launch a tiered discount promotion next week, but the current system only supports simple percentage discounts. The requirements are complex: tiered bonuses based on order amount, seasonal multipliers, discount stacking rules, and maximum caps per customer type. You need to ensure the new rules are both technically feasible and aligned with business strategy—and you need to finalize this today.
 
-Jan starts an OCT session from Theia and sends you a room ID. You join via the OCT Playground in your browser.
+Jan starts an OCT session from Theia and sends you a room ID. You join via the OCT Playground in your browser. You're both on the video call and can see each other's cursors in the shared editor.
+
+**Presentation Note:** During the demo, you and Jan will speak naturally to each other over the video call while simultaneously editing the shared files. The audience will see both your screen (OCT Playground in browser) and hear your conversation. This demonstrates how voice communication + shared editing creates a powerful collaboration experience that's impossible with either tool alone.
 
 ## Act 1 – Discovering Complex Business Requirements
 
@@ -55,20 +57,28 @@ export function calculateDiscount(customerType: string, amount: number): number 
 }
 ```
 
- - You (stakeholder) start typing comments directly in the code:
-   ```
-   // URGENT: Marketing needs tiered discounts - spend $500 get extra 5%, spend $1000 get extra 10%
-   // Question: Can VIP customers stack their 10% with tier bonuses? That could be 20% total!
-   // Also need seasonal multipliers for Black Friday (2x all discounts)
-   ```
-
- - Jan responds by typing:
-   ```
-   // Performance concern: Multiple discount calculations per order. Need to optimize.
-   // Business question: What's the maximum discount allowed? 50%? 75%?
+ - **You (on call):** "Okay, so this is what we have now. But marketing needs something more complex. They want tiered discounts—like if you spend $500, you get an extra 5%, and if you spend $1000, you get an extra 10%."
+ 
+ - **Jan:** "Interesting. So that would stack with the VIP discount? A VIP spending $1000 would get 10% plus 10%?"
+ 
+ - **You:** "Exactly! And they also want seasonal multipliers for Black Friday—like 2x all discounts."
+ 
+ - **Jan:** "Hmm, that could get complicated. Let me think about the formula..." *(starts typing a comment in the code)*
+   ```typescript
+   // TODO: Need to figure out: (base * seasonal) + tier? Or (base + tier) * seasonal?
    ```
 
- - You both realize this needs a more sophisticated structure. Jan starts refactoring while you watch:
+ - **You:** "What's the difference?"
+ 
+ - **Jan:** "Well, if we multiply the base by seasonal first, then add tier bonuses, a VIP on Black Friday would get (10% × 2) + 10% = 30%. But if we add first then multiply, it would be (10% + 10%) × 2 = 40%."
+ 
+ - **You:** "Oh! Yeah, let's do the first one—multiply base by seasonal, then add tier. That seems more reasonable. But we need caps, right? We can't give away 50% discounts."
+ 
+ - **Jan:** "Good point. What should the caps be?"
+ 
+ - **You:** "Let's say... 40% for regular customers, 50% for loyalty, 60% for VIP."
+ 
+ - **Jan:** "Got it. Let me refactor this..." *(starts coding while you watch)*
 
 ```typescript
 interface DiscountContext {
@@ -78,28 +88,6 @@ interface DiscountContext {
     isPromotionalPeriod?: boolean;
 }
 
-export function calculateTieredDiscount(context: DiscountContext): DiscountResult {
-    // Base discount by customer type
-    let baseDiscount = getBaseDiscount(context.customerType);
-    
-    // Tier bonus based on amount
-    const tierBonus = getTierBonus(context.amount);
-    
-    // Seasonal multiplier
-    const seasonalMultiplier = getSeasonalMultiplier(context.orderDate);
-    
-    // TODO: How do we combine these? Add? Multiply? Cap at max?
-}
-```
-
- - You type: `// Let's multiply base by seasonal, then ADD tier bonus. Cap at 50% for LOYALTY, 60% for VIP`
- - Jan types: `// That means a VIP spending $1000 on Black Friday gets: (10% * 2) + 10% = 30%. Correct?`
- - You type: `// Yes! But regular customers should cap at 40% even with tier bonuses`
- - Jan types: `// Got it. Let me add the calculation logic...`
-
- - Jan implements while you both see the code evolve:
-
-```typescript
 export function calculateTieredDiscount(context: DiscountContext): DiscountResult {
     const baseDiscount = getBaseDiscount(context.customerType);
     const tierBonus = getTierBonus(context.amount);
@@ -122,22 +110,29 @@ export function calculateTieredDiscount(context: DiscountContext): DiscountResul
 }
 ```
 
- - You type: `// Perfect! But what about ENTERPRISE customers? They should get 15% base + no cap`
- - Jan types: `// Good point - let me add that customer type to the enum and update the logic`
+ - **You:** "Wait, what about our enterprise customers? They should get better treatment—maybe 15% base and no cap?"
+ 
+ - **Jan:** "No cap at all? That could be risky..."
+ 
+ - **You:** "Well, enterprise orders are huge—minimum $5,000. We can afford to be generous."
+ 
+ - **Jan:** "Fair enough. Let me add that customer type..." *(adds ENTERPRISE to the enum and updates the logic)*
 
 Value shown: 
 - Complex business logic requires real-time discussion and immediate clarification
 - Both parties contribute domain knowledge (business rules + technical constraints)
-- Comments become a conversation medium within the code itself
+- Voice communication allows natural back-and-forth about trade-offs
 - Synchronous editing prevents misunderstandings about calculation logic
 - Developer can implement while stakeholder validates business rules in real-time
 - Questions are answered immediately, preventing costly rework
 
 ## Act 2 – Synchronizing Documentation with Complex Rules
 
- - Jan switches to README.md in Theia. Instantly, your Playground view follows.
- - The file contains simple feature documentation. You both need to update it with the complex new rules.
- - You start editing the discount tiers section:
+ - **Jan:** "Okay, let me switch to the README so we can document this..." *(switches to README.md in Theia)*
+ - Your Playground view instantly follows to the same file.
+ 
+ - **Jan:** "I'll start with a table showing all the customer types..."
+ - You watch as Jan types the table structure, then you jump in and start editing:
 
 ```markdown
 ### Customer Discount Tiers
@@ -150,22 +145,29 @@ The system supports four customer types with sophisticated discount rules:
 | LOYALTY | 5% | Yes | Yes | 50% |
 | VIP | 10% | Yes | Yes | 60% |
 | ENTERPRISE | 15% | Yes | Yes | No cap |
-
-#### Tier Bonuses (All Customer Types)
-- Orders $500-$999: Additional 5% discount
-- Orders $1000+: Additional 10% discount
 ```
 
- - Jan types: `Wait - do tier bonuses apply BEFORE or AFTER the seasonal multiplier?`
- - You type: `After! So it's (base * seasonal) + tier. Let me clarify...`
- - You add:
+ - **You:** "Let me add the tier bonus info..." *(types tier bonus section)*
+   ```markdown
+   #### Tier Bonuses (All Customer Types)
+   - Orders $500-$999: Additional 5% discount
+   - Orders $1000+: Additional 10% discount
+   ```
+
+ - **Jan:** "Wait, we should clarify the formula. Do tier bonuses apply before or after the seasonal multiplier?"
+ 
+ - **You:** "After! Remember, we said (base times seasonal) plus tier. Let me add that..." *(starts typing the formula)*
 
 ```markdown
 #### Discount Calculation Formula
 
 totalDiscount = (baseDiscount × seasonalMultiplier) + tierBonus
 finalDiscount = min(totalDiscount, maxDiscountForCustomerType)
+```
 
+ - **Jan:** "Good. We should add examples. Let me do a VIP on Black Friday..." *(types example)*
+
+```markdown
 **Example:** VIP customer spending $1000 during Black Friday (2x seasonal):
 - Base: 10%
 - Seasonal: 10% × 2 = 20%
@@ -174,8 +176,11 @@ finalDiscount = min(totalDiscount, maxDiscountForCustomerType)
 - Final: 30% (under 60% VIP cap) ✓
 ```
 
- - Jan types: `Perfect! But we should add an example that HITS the cap to make it clear`
- - You type: `Good idea!` and add:
+ - **You:** "Perfect! But we should show an example where someone hits the cap, so it's really clear."
+ 
+ - **Jan:** "Good idea. And maybe one for regular customers too, since they have no base discount."
+ 
+ - **You:** "Yeah, let me add those..." *(types two more examples)*
 
 ```markdown
 **Example 2:** LOYALTY customer spending $1000 during Black Friday:
@@ -193,23 +198,25 @@ finalDiscount = min(totalDiscount, maxDiscountForCustomerType)
 - Final: 10% (under 40% REGULAR cap) ✓
 ```
 
- - Jan types: `Hmm, that last example shows regular customers only get tier bonuses. Is that what marketing wants?`
- - You type: `Actually, let me check... [pause] Yes, confirmed. Regular customers can still benefit from tier bonuses and promotions, just no base discount.`
- - Jan types: `Got it. That's actually a nice incentive for them to upgrade to LOYALTY.`
+ - **Jan:** "Hmm, so regular customers only get tier bonuses, no base discount. Is that really what marketing wants?"
+ 
+ - **You:** "Yeah, it's intentional. It gives them an incentive to upgrade to loyalty. They can still save money on big orders, but loyalty members get more."
+ 
+ - **Jan:** "Makes sense. That's actually pretty smart."
 
 Value shown: 
 - Cross-file navigation is synchronized automatically
 - Complex business rules require detailed documentation with examples
 - Both parties validate that documentation matches implementation
-- Real-time discussion catches potential misunderstandings
+- Voice communication allows natural discussion of edge cases
 - Stakeholder ensures customer-facing language is clear
 - Developer ensures technical accuracy of formulas and examples
-- Examples are refined collaboratively to cover edge cases
+- Examples are refined collaboratively in real-time
 
 ## Act 3 – Complex Configuration Structure
 
- - Jan switches to config.json. Your view follows instantly.
- - The current config is too simple for the new requirements:
+ - **Jan:** "Now we need to update the config file to match all this..." *(switches to config.json)*
+ - Your view follows instantly. You see the current simple config:
 
 ```json
 {
@@ -223,8 +230,9 @@ Value shown:
 }
 ```
 
- - You type in the file: `// Need to restructure this for tiered system`
- - Jan types: `// Let me create a proper structure...` and starts refactoring:
+ - **You:** "Yeah, this won't work anymore. We need to restructure it."
+ 
+ - **Jan:** "Right. Let me create a proper structure for customer types..." *(starts typing)*
 
 ```json
 {
@@ -251,8 +259,9 @@ Value shown:
 }
 ```
 
- - You type: `// Add ENTERPRISE with 15% base and no cap`
- - Jan adds:
+ - **You:** "Don't forget ENTERPRISE—15% base and no cap. How do we represent 'no cap'?"
+ 
+ - **Jan:** "We can use null for that..." *(adds ENTERPRISE)*
 
 ```json
     "ENTERPRISE": {
@@ -263,8 +272,9 @@ Value shown:
     }
 ```
 
- - You type: `// Now add the tier thresholds`
- - Jan continues:
+ - **You:** "Perfect. Now we need the tier thresholds—$500 and $1000."
+ 
+ - **Jan:** "I'll add those as an array..." *(types tier bonuses section)*
 
 ```json
   "tierBonuses": [
@@ -281,8 +291,9 @@ Value shown:
   ]
 ```
 
- - You type: `// What about seasonal periods? Black Friday, Cyber Monday, etc.`
- - Jan types: `// Good point. Let me add a promotional periods section:`
+ - **You:** "Great! And we need the promotional periods—Black Friday, Cyber Monday, Holiday Season."
+ 
+ - **Jan:** "Okay, let me add those with dates..." *(adds promotional periods)*
 
 ```json
   "promotionalPeriods": [
@@ -310,10 +321,13 @@ Value shown:
   ]
 ```
 
- - You type: `// Perfect! But we need a way to disable specific promotions if needed`
- - Jan types: `// Already added "enabled" flag - we can toggle without deleting the config`
- - You type: `// Smart! Also add currency and minimum order`
- - Jan completes:
+ - **You:** "Nice! I like that you added an 'enabled' flag. So we can turn off a promotion without deleting it?"
+ 
+ - **Jan:** "Exactly. Makes it easier to manage."
+ 
+ - **You:** "Smart. Should we add anything else?"
+ 
+ - **Jan:** "Maybe a business rules section to make our policies explicit..." *(adds final section)*
 
 ```json
   "currency": "USD",
@@ -326,24 +340,25 @@ Value shown:
 }
 ```
 
- - You type: `// Wait, what does "applySeasonalToBaseOnly" mean?`
- - Jan types: `// It means seasonal multiplier only applies to base discount, not tier bonuses. That's what we agreed in Act 1.`
- - You type: `// Right! Just wanted to make sure. This looks good.`
+ - **You:** "What's 'applySeasonalToBaseOnly'?"
+ 
+ - **Jan:** "That's the rule we decided earlier—seasonal multiplier only applies to the base discount, not the tier bonuses."
+ 
+ - **You:** "Oh right! Yeah, that's important to document. This looks good!"
 
 Value shown:
 - Complex nested configuration requires careful structuring
-- Stakeholder proposes business requirements, developer implements valid JSON
+- Voice communication allows natural discussion of structure decisions
 - Real-time validation prevents syntax errors
 - Both parties ensure configuration matches code implementation
 - Configuration becomes self-documenting with clear field names
-- Edge cases are discussed and resolved immediately (null for no cap, enabled flags, etc.)
+- Edge cases are discussed and resolved immediately (null for no cap, enabled flags)
 - Business rules are made explicit in configuration
 
 ## Act 4 – Validation Rules and Edge Cases
 
- - Jan types in chat: `We should add a validation file to ensure business rules are enforced`
- - You type: `Good idea - I want to make sure we catch invalid combinations`
- - Jan creates a new file: validation-rules.ts and shares it. Your view switches to the new file.
+ - **Jan:** "We should probably add some validation to catch edge cases. Let me create a new file..." *(creates validation-rules.ts)*
+ - Your view switches to the new file automatically.
 
 ```typescript
 /**
@@ -375,26 +390,15 @@ export function validateDiscountRequest(
 }
 ```
 
- - You start typing validation rules as comments:
-   ```
-   // 1. Amount must be positive
-   // 2. Customer type must be valid (REGULAR, LOYALTY, VIP, ENTERPRISE)
-   // 3. ENTERPRISE customers require minimum $5000 order
-   // 4. During promotional periods, orders under $100 don't get seasonal multiplier
-   // 5. Tier bonuses only apply to orders $500+
-   ```
-
- - Jan types: `// Let me implement these...` and starts coding:
+ - **You:** "Good idea. What kind of validation do we need?"
+ 
+ - **Jan:** "Well, basic stuff like positive amounts, valid customer types..."
+ 
+ - **You:** "And ENTERPRISE customers need a minimum order of $5,000, right?"
+ 
+ - **Jan:** "Right. Let me add those..." *(starts implementing validation rules)*
 
 ```typescript
-export function validateDiscountRequest(
-    customerType: string,
-    amount: number,
-    orderDate: Date
-): ValidationResult {
-    const errors: string[] = [];
-    const warnings: string[] = [];
-    
     // Rule 1: Amount must be positive
     if (amount <= 0) {
         errors.push('Order amount must be greater than zero');
@@ -412,10 +416,13 @@ export function validateDiscountRequest(
     }
 ```
 
- - You type: `// Wait - should that be an error or just downgrade them to VIP pricing?`
- - Jan types: `// Good question. What's the business rule?`
- - You type: `// Let's make it a warning and apply VIP pricing instead. We don't want to lose the sale.`
- - Jan updates:
+ - **You:** "Wait, should that be an error? What if an enterprise customer wants to make a small order? We'd just reject it?"
+ 
+ - **Jan:** "Good point. What should we do?"
+ 
+ - **You:** "Let's make it a warning and just give them VIP pricing instead. We don't want to lose the sale."
+ 
+ - **Jan:** "Smart. So downgrade them automatically..." *(updates the code)*
 
 ```typescript
     // Rule 3: ENTERPRISE minimum (warning, will apply VIP pricing)
@@ -424,7 +431,11 @@ export function validateDiscountRequest(
     }
 ```
 
- - Jan continues:
+ - **Jan:** "What about promotional periods? Should there be a minimum?"
+ 
+ - **You:** "Yeah, let's say orders under $100 don't get the seasonal multiplier. Otherwise people will game the system with tiny orders."
+ 
+ - **Jan:** "Makes sense..." *(adds that rule)*
 
 ```typescript
     // Rule 4: Promotional period minimum for seasonal multiplier
@@ -432,25 +443,15 @@ export function validateDiscountRequest(
     if (isPromotionalPeriod && amount < 100) {
         warnings.push('Orders under $100 do not qualify for seasonal multiplier during promotions');
     }
-    
-    // Rule 5: Tier bonus minimum
-    if (amount < 500) {
-        // This is informational, not a warning
-        // Tier bonuses simply won't apply
-    }
-    
-    return {
-        isValid: errors.length === 0,
-        errors,
-        warnings
-    };
-}
 ```
 
- - You type: `// Should we add a maximum order amount check? For fraud prevention?`
- - Jan types: `// Good idea. What's the threshold?`
- - You type: `// Let's flag orders over $50,000 for manual review`
- - Jan adds:
+ - **You:** "Should we add fraud prevention? Like flag really large orders?"
+ 
+ - **Jan:** "Good idea. What's the threshold?"
+ 
+ - **You:** "Maybe $50,000? Anything above that gets flagged for manual review."
+ 
+ - **Jan:** "Got it..." *(adds large order check)*
 
 ```typescript
     // Rule 6: Large order review
@@ -459,9 +460,9 @@ export function validateDiscountRequest(
     }
 ```
 
- - You type: `// Also, what if someone tries to use a promotional code with these discounts?`
- - Jan types: `// That's a separate system, but we should add a note about stacking rules`
- - Jan adds a comment:
+ - **You:** "What about promotional codes? Can people stack those with these discounts?"
+ 
+ - **Jan:** "That's a separate system, but I should add a note about it..." *(adds documentation comment)*
 
 ```typescript
 /**
@@ -473,31 +474,23 @@ export function validateDiscountRequest(
  */
 ```
 
- - You type: `// Perfect. This covers all the edge cases we discussed with marketing.`
- - Jan types: `// Agreed. Let me add one more function for checking promotional periods...`
-
-```typescript
-function checkPromotionalPeriod(orderDate: Date): boolean {
-    // Load from config.json promotional periods
-    // Check if orderDate falls within any active promotional period
-    return false; // TODO: Implement
-}
-```
+ - **You:** "Perfect. I think that covers everything marketing mentioned."
+ 
+ - **Jan:** "Agreed. This should catch all the edge cases."
 
 Value shown:
 - New file creation is synchronized across participants
 - Complex business validation rules require discussion of edge cases
-- Stakeholder identifies business scenarios that need handling
-- Developer implements technical validation logic
-- Real-time discussion resolves ambiguities (error vs warning, thresholds, etc.)
+- Voice communication allows natural back-and-forth about business decisions
+- Real-time discussion resolves ambiguities (error vs warning, thresholds)
 - Both parties ensure all edge cases from marketing requirements are covered
 - Documentation is added inline to clarify complex interactions
 - The validation file becomes a living document of business rules
 
 ## Act 5 – Wrap-Up and Verification
 
- - Jan types in chat: `Let's review what we've built together`
- - You both navigate back through the files:
+ - **Jan:** "Okay, let me quickly review what we've built..." *(navigates back through the files)*
+ - Your view follows as Jan switches between files.
 
 **discount-rules.ts:**
 - ✅ Complex tiered discount calculation with seasonal multipliers
@@ -524,16 +517,23 @@ Value shown:
 - ✅ Fraud prevention for large orders
 - ✅ Documentation of interaction with promo code system
 
- - You type: `// This is exactly what marketing needs. And we did it in one session!`
- - Jan types: `// Agreed. Without this real-time collaboration, we would have had multiple rounds of revisions.`
- - You type: `// The key was being able to discuss trade-offs immediately - like the ENTERPRISE minimum being a warning vs error.`
- - Jan types: `// And you could validate the business logic as I coded it. Saved us from implementing the wrong formula.`
+ - **You:** "This is perfect! This is exactly what marketing needs, and we got it done in one session."
+ 
+ - **Jan:** "Yeah, if we'd done this over email or tickets, it would have taken days. All those little decisions—like whether to error or warn on the ENTERPRISE minimum—we resolved them instantly."
+ 
+ - **You:** "Exactly! And I could validate the business logic as you were coding it. Like when we figured out the formula—multiply base by seasonal, then add tier. If you'd implemented it the other way, we would have caught it in testing and had to redo everything."
+ 
+ - **Jan:** "Right. And the documentation examples—you made sure they were clear for customers while I made sure the math was correct. That back-and-forth would have been painful over email."
+ 
+ - **You:** "Definitely. Okay, I'll let marketing know we're ready to go. Thanks for jumping on this so quickly!"
+ 
+ - **Jan:** "No problem. This was actually pretty efficient!"
 
 **Summary of what synchronous collaboration enabled:**
 
 1. **Immediate clarification of complex requirements** - No waiting for email responses about calculation formulas
-2. **Real-time validation of business logic** - Stakeholder caught the ENTERPRISE edge case immediately
-3. **Collaborative problem-solving** - Both parties contributed to the solution (e.g., seasonal multiplier application)
+2. **Real-time validation of business logic** - Stakeholder caught potential issues as code was written
+3. **Collaborative problem-solving** - Both parties contributed expertise (business rules + technical constraints)
 4. **Prevention of costly rework** - Formula was validated before implementation was complete
 5. **Comprehensive edge case coverage** - Discussion surfaced scenarios neither party had initially considered
 6. **Aligned documentation** - README examples were validated against actual implementation
@@ -558,3 +558,27 @@ Value shown:
 ✅ Edge cases discovered and resolved immediately
 ✅ No IDE setup required for stakeholder
 ✅ True collaboration on code, docs, config, and validation rules
+✅ Natural voice communication combined with shared editing
+
+---
+
+## Presentation Tips
+
+**Timing:** This demo should take approximately 10-15 minutes, depending on how much you elaborate on each point.
+
+**Key Moments to Emphasize:**
+1. **Act 1**: The formula discussion (add vs multiply) - shows how complex logic needs real-time clarification
+2. **Act 2**: When Jan switches files and your view follows automatically - demonstrates synchronized navigation
+3. **Act 4**: The ENTERPRISE minimum decision (error vs warning) - shows collaborative decision-making
+4. **Act 5**: The comparison of 1 hour vs 3-5 days - drives home the efficiency gain
+
+**Audience Engagement:**
+- After Act 1, you might pause and ask: "How long would this formula discussion take over email?"
+- After Act 4, highlight: "Notice how we made a business decision in 30 seconds that would normally require a meeting"
+- During Act 5, emphasize: "We edited 4 different files together, and both of us always knew exactly what was happening"
+
+**Technical Notes:**
+- Make sure both screens are visible to the audience (or switch between them)
+- Show cursor highlights when both of you are editing
+- If there's a lag, acknowledge it naturally - real collaboration isn't always perfect
+- Have the OCT room ID ready before the presentation starts
