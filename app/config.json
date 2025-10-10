@@ -1,0 +1,9 @@
+{
+  "discountRules": {
+    "vipDiscount": 0.10,
+    "loyaltyDiscount": 0.05
+  },
+  "currency": "USD",
+  "minimumOrderAmount": 0,
+  "maxDiscountPerOrder": 1000
+}
