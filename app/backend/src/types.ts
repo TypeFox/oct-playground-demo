@@ -1,4 +1,4 @@
-export type CustomerType = 'REGULAR' | 'VIP' | 'LOYALTY';
+export type CustomerType = 'REGULAR' | 'VIP' | 'LOYALTY' | 'ENTERPRISE';
 
 export interface DiscountRequest {
   customerType: CustomerType;

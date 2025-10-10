@@ -1,9 +1,82 @@
 {
-  "discountRules": {
-    "vipDiscount": 0.10,
-    "loyaltyDiscount": 0.05
+  "customerTypes": {
+    "REGULAR": {
+      "baseDiscount": 0.0,
+      "maxTotalDiscount": 0.40,
+      "allowTierBonuses": true,
+      "allowSeasonalMultiplier": true,
+      "description": "Standard customers with no base discount"
+    },
+    "LOYALTY": {
+      "baseDiscount": 0.05,
+      "maxTotalDiscount": 0.50,
+      "allowTierBonuses": true,
+      "allowSeasonalMultiplier": true,
+      "description": "Loyalty card holders with 5% base discount"
+    },
+    "VIP": {
+      "baseDiscount": 0.10,
+      "maxTotalDiscount": 0.60,
+      "allowTierBonuses": true,
+      "allowSeasonalMultiplier": true,
+      "description": "VIP members with 10% base discount"
+    },
+    "ENTERPRISE": {
+      "baseDiscount": 0.15,
+      "maxTotalDiscount": null,
+      "allowTierBonuses": true,
+      "allowSeasonalMultiplier": true,
+      "minimumOrderAmount": 5000,
+      "description": "Enterprise customers with 15% base discount and no cap"
+    }
+  },
+  "tierBonuses": [
+    {
+      "minAmount": 500,
+      "maxAmount": 999.99,
+      "bonusDiscount": 0.05,
+      "description": "5% bonus for orders $500-$999"
+    },
+    {
+      "minAmount": 1000,
+      "maxAmount": null,
+      "bonusDiscount": 0.10,
+      "description": "10% bonus for orders $1000+"
+    }
+  ],
+  "promotionalPeriods": [
+    {
+      "name": "Black Friday",
+      "startDate": "2024-11-29",
+      "endDate": "2024-11-29",
+      "seasonalMultiplier": 2.0,
+      "enabled": true,
+      "minimumOrderForMultiplier": 100
+    },
+    {
+      "name": "Cyber Monday",
+      "startDate": "2024-12-02",
+      "endDate": "2024-12-02",
+      "seasonalMultiplier": 2.0,
+      "enabled": true,
+      "minimumOrderForMultiplier": 100
+    },
+    {
+      "name": "Holiday Season",
+      "startDate": "2024-12-15",
+      "endDate": "2024-12-31",
+      "seasonalMultiplier": 1.5,
+      "enabled": true,
+      "minimumOrderForMultiplier": 100
+    }
+  ],
+  "businessRules": {
+    "allowDiscountStacking": true,
+    "requireMinimumForTierBonus": false,
+    "applySeasonalToBaseOnly": true,
+    "largeOrderThreshold": 50000,
+    "largeOrderRequiresReview": true
   },
   "currency": "USD",
-  "minimumOrderAmount": 0,
-  "maxDiscountPerOrder": 1000
+  "minimumOrderAmount": 0
 }

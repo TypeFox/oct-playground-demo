@@ -63,8 +63,9 @@ function App() {
                 className="form-select"
               >
                 <option value="REGULAR">Regular Customer</option>
-                <option value="VIP">VIP Customer (10% off)</option>
                 <option value="LOYALTY">Loyalty Card Holder (5% off)</option>
+                <option value="VIP">VIP Customer (10% off)</option>
+                <option value="ENTERPRISE">Enterprise Customer (15% off)</option>
               </select>
             </div>
 
@@ -130,16 +131,29 @@ function App() {
           <div className="tier-list">
             <div className="tier-item">
               <div className="tier-badge regular">Regular</div>
-              <div className="tier-description">Standard pricing - no discount</div>
+              <div className="tier-description">Standard pricing - no base discount</div>
+              <div className="tier-note">Max 40% with tier bonuses</div>
             </div>
             <div className="tier-item">
               <div className="tier-badge loyalty">Loyalty</div>
-              <div className="tier-description">5% discount on all purchases</div>
+              <div className="tier-description">5% base discount + tier bonuses</div>
+              <div className="tier-note">Max 50% total discount</div>
             </div>
             <div className="tier-item">
               <div className="tier-badge vip">VIP</div>
-              <div className="tier-description">10% discount on all purchases</div>
+              <div className="tier-description">10% base discount + tier bonuses</div>
+              <div className="tier-note">Max 60% total discount</div>
             </div>
+            <div className="tier-item">
+              <div className="tier-badge enterprise">Enterprise</div>
+              <div className="tier-description">15% base discount + tier bonuses</div>
+              <div className="tier-note">No cap • $5,000 minimum</div>
+            </div>
+          </div>
+          <div className="tier-bonuses">
+            <h3>Tier Bonuses</h3>
+            <p>📦 Orders $500-$999: +5% bonus</p>
+            <p>📦 Orders $1000+: +10% bonus</p>
           </div>
         </div>
       </main>
