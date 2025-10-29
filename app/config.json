@@ -30,20 +30,7 @@
       "description": "Enterprise customers with 15% base discount and no cap"
     }
   },
-  "tierBonuses": [
-    {
-      "minAmount": 500,
-      "maxAmount": 999.99,
-      "bonusDiscount": 0.05,
-      "description": "5% bonus for orders $500-$999"
-    },
-    {
-      "minAmount": 1000,
-      "maxAmount": null,
-      "bonusDiscount": 0.10,
-      "description": "10% bonus for orders $1000+"
-    }
-  ],
+  "tierBonuses": [],
   "promotionalPeriods": [
     {
       "name": "Black Friday",
