@@ -99,8 +99,7 @@ The system supports four customer types with sophisticated discount rules combin
 
 Tier bonuses are automatically applied based on order amount:
 
-- **Orders $500-$999**: Additional 5% discount
-- **Orders $1000+**: Additional 10% discount
+TODO
 
 #### Seasonal Multipliers
 
